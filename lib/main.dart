@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:triviatec_app/screens/splash.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,12 +8,11 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const Text( 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner:false,
+      home: Splach(),
     );
   }
 }
