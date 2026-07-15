@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:triviatec_app/screens/splash.dart';
+import 'package:triviatec_app/screens/home.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner:false,
-      home: Splach(),
+      home: Home(),
     );
   }
 }
