@@ -11,9 +11,10 @@ Future<dynamic> fetchQuestions({
     '?amount=$questionNumber'
     '&category=$category'
     '&difficulty=$difficulty'
-    '&type=multiple',
+    '&type=multiple'
+    // 'encode=url3986',
   );
-  print(url);
+    // '&encode=url3986',
 
   final response = await http.get(url);
 
@@ -21,7 +22,6 @@ Future<dynamic> fetchQuestions({
     // Parse JSON
     var jsonResponse =
         convert.jsonDecode(response.body) as Map<String, dynamic>;
-    print(jsonResponse);
     return jsonResponse;
   }
 
@@ -46,7 +46,6 @@ Future<dynamic> fetchQuestions({
 
 Future<List<dynamic>> fetchCategories() async {
   final url = Uri.parse('https://opentdb.com/api_category.php');
-  print(url);
   final response = await http.get(url);
 
   if (response.statusCode == 200) {

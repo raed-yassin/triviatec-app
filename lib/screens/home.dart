@@ -3,6 +3,7 @@ import 'package:triviatec_app/screens/questions.dart';
 import 'package:triviatec_app/utils/colors.dart';
 import 'package:triviatec_app/widgets/api.dart';
 import 'package:triviatec_app/widgets/appbar.dart';
+import 'package:triviatec_app/widgets/next_button.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,7 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int questionsNumbers = 5;
+  int questionsNumber = 5;
   String difficultyLevel = 'easy';
   String category = '1';
   List categories = [];
@@ -29,7 +30,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loadCategories();
   }
@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
                             labelText: "Category",
                             border: OutlineInputBorder(),
                           ),
-
+    
                           onChanged: (value) => setState(() {
                             category = value.toString();
                           }),
@@ -97,7 +97,7 @@ class _HomeState extends State<Home> {
                               return "Difficulty is required";
                             }
                           },
-
+    
                           // initialSelection: 'easy',
                           items: [
                             DropdownMenuItem(
@@ -112,7 +112,7 @@ class _HomeState extends State<Home> {
                               value: "hard",
                               child: Text("Hard"),
                             ),
-
+    
                             // DropdownMenuEntry(value: "easy", label: "Easy"),
                             // DropdownMenuEntry(value: "medium", label: "Medium"),
                             // DropdownMenuEntry(value: "hard", label: "Hard"),
@@ -124,10 +124,10 @@ class _HomeState extends State<Home> {
                             labelText: "Questions Number",
                             border: OutlineInputBorder(),
                           ),
-
+    
                           onChanged: (value) {
                             setState(() {
-                              questionsNumbers = value ?? 5;
+                              questionsNumber = value ?? 5;
                             });
                           },
                           validator: (value) {
@@ -143,47 +143,29 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                         SizedBox(height: 55),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: whiteColor, // Text color
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 35,
-                              vertical: 15,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
+                        nextButton(
                           onPressed: () async {
                             if (!_formKey.currentState!.validate()) return;
-                            // final questions = await getQuestions(
-                            //       category: category,
-                            //       difficulty: difficultyLevel,
-                            //       questionNumber: questionsNumbers,
-                            //     );
                             final questions = await fetchQuestions(
                               category: category,
                               difficulty: difficultyLevel,
-                              questionNumber: questionsNumbers,
+                              questionNumber: questionsNumber,
                             );
-
+    
                             if (!context.mounted) return;
-
+    
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Questions(),
+                                builder: (context) => Questions(
+                                  questions: questions['results'] ?? [],
+                                  difficultyLevel: difficultyLevel,
+                                  questionsNumber: questionsNumber,
+                                  category: category,
+                                ),
                               ),
                             );
                           },
-                          child: Text(
-                            "Next",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
                         ),
                       ],
                     ),
