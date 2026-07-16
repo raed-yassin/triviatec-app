@@ -34,16 +34,17 @@ class Results extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("The Results",style: TextStyle(),),
-              SizedBox(height: 10,),
-              Text("Your Score $score out of $questionsNumber",style: TextStyle(),),
-              SizedBox(height: 10,),
-              Text("Category $category",style: TextStyle(),),
-              SizedBox(height: 10,),
-              Text("Difficulty: $difficultyLevel",style: TextStyle(),),
+              SizedBox(height: 25,),
+              Text("The Results",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 40, color: whiteColor),),
               SizedBox(height: 30,),
+              Text("Your Score $score out of $questionsNumber",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.black54),),
+              SizedBox(height: 10,),
+              Text("Category: $category",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,color: whiteColor),),
+              SizedBox(height: 10,),
+              Text("Difficulty: $difficultyLevel",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,color: whiteColor ),),
+              SizedBox(height: 60,),
               nextButton(
-                buttonText: "PLAY AGAIN",
+                buttonText: "Play Again",
                 onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
               })

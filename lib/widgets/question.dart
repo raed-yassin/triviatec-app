@@ -10,7 +10,7 @@ class Question extends StatefulWidget {
   final String correct;
   final List<dynamic> incorrect;
   final int currentQuestion;
-  final void Function(bool)  onPressedButton;
+  final void Function(bool) onPressedButton;
 
   const Question({
     super.key,
@@ -51,86 +51,90 @@ class _QuestionState extends State<Question> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          SizedBox(height: 30),
-          Container(
-            padding: EdgeInsets.all(10),
-            color: primaryColor,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  '${widget.questionsNumber} / ${widget.currentQuestion + 1}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 30),
-          Text(
-            Uri.decodeComponent(widget.question),
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight(600)),
-          ),
-
-          SizedBox(height: 30),
-          ListView.separated(
-            separatorBuilder: (context, index) => SizedBox(height: 15),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: questionsList.length,
-            itemBuilder: (context, index) {
-              return Container(
-                height: 60,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: whiteColor,
-                    // backgroundColor:   cardColor,
-                    backgroundColor: !isAnswered
-                        ? cardColor
-                        : (correctIndex == index
-                              ? correctColor
-                              : selectedIndex == index
-                              ? wrongColor
-                              : cardColor),
-                    overlayColor: primaryColor,
-                  ),
-                  onPressed: () {
-                    if (isAnswered) return;
-                    setState(() {
-                      selectedIndex = index;
-                      isAnswered = true;
-                    });
-                    if (index == correctIndex) {
-                      // this for count his score
-                      print(index);
-                    }
-                  },
-                  child: Center(
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          children: [
+            SizedBox(height: 10),
+            Container(
+              // padding: EdgeInsets.all(10),
+              // color: primaryColor,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(20), // 👈 radius here
+                    ),
                     child: Text(
-                      Uri.decodeComponent(questionsList[index].answer),
-                      // questionsList[index].answer,
-                      style: TextStyle(fontSize: 15),
+                      '${widget.questionsNumber} / ${widget.currentQuestion + 1}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-          SizedBox(height: 30),
-          nextButton(
-            onPressed: () {
-              if (selectedIndex == -1) return;
-              print(correctIndex == selectedIndex);
-              widget.onPressedButton( correctIndex == selectedIndex );
-            },
-          ),
-        ],
+                ],
+              ),
+            ),
+            SizedBox(height: 30),
+            Text(
+              Uri.decodeComponent(widget.question),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight(600)),
+            ),
+
+            SizedBox(height: 30),
+            ListView.separated(
+              separatorBuilder: (context, index) => SizedBox(height: 15),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: questionsList.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  height: 60,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: whiteColor,
+                      // backgroundColor:   cardColor,
+                      backgroundColor: !isAnswered
+                          ? cardColor
+                          : (correctIndex == index
+                                ? correctColor
+                                : selectedIndex == index
+                                ? wrongColor
+                                : cardColor),
+                      overlayColor: primaryColor,
+                    ),
+                    onPressed: () {
+                      if (isAnswered) return;
+                      setState(() {
+                        selectedIndex = index;
+                        isAnswered = true;
+                      });
+                    },
+                    child: Center(
+                      child: Text(
+                        Uri.decodeComponent(questionsList[index].answer),
+                        // questionsList[index].answer,
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 60),
+            nextButton(
+              onPressed: () {
+                if (selectedIndex == -1) return;
+                widget.onPressedButton(correctIndex == selectedIndex);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

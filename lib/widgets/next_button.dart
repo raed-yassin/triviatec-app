@@ -8,13 +8,13 @@ Widget nextButton({
   style: TextButton.styleFrom(
     backgroundColor: primaryColor,
     foregroundColor: whiteColor, // Text color
-    padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 15),
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
   ),
   onPressed: onPressed,
   child: Text(
     buttonText,
-    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
   ),
 );
 
