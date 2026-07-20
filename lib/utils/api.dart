@@ -1,8 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+import 'package:triviatec_app/utils/classes.dart';
+
 Future<dynamic> fetchQuestions({
-  required String category,
+  required int category,
   required String difficulty,
   int questionNumber = 5,
 }) async {
@@ -11,10 +13,10 @@ Future<dynamic> fetchQuestions({
     '?amount=$questionNumber'
     '&category=$category'
     '&difficulty=$difficulty'
-    '&type=multiple'
+    '&type=multiple',
     // 'encode=url3986',
   );
-    // '&encode=url3986',
+  // '&encode=url3986',
 
   final response = await http.get(url);
 
@@ -44,14 +46,16 @@ Future<dynamic> fetchQuestions({
 //   throw Exception('Failed to load Categories');
 // }
 
-Future<List<dynamic>> fetchCategories() async {
+Future<List<Category>> fetchCategories() async {
   final url = Uri.parse('https://opentdb.com/api_category.php');
   final response = await http.get(url);
 
   if (response.statusCode == 200) {
     final jsonResponse = convert.jsonDecode(response.body);
 
-    return jsonResponse['trivia_categories'];
+    final categoriesJson = jsonResponse['trivia_categories'] as List;
+
+    return categoriesJson.map((json) => Category.fromJson(json)).toList();
   }
 
   throw Exception('Failed to load Categories');

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:triviatec_app/providers/category_provider.dart';
 import 'package:triviatec_app/utils/classes.dart';
 import 'package:triviatec_app/utils/colors.dart';
 import 'package:triviatec_app/utils/enums.dart';
 import 'package:triviatec_app/widgets/next_button.dart';
 
-class Question extends StatefulWidget {
+class Question extends ConsumerStatefulWidget {
   final String question;
-  final int questionsNumber;
   final String correct;
   final List<dynamic> incorrect;
   final int currentQuestion;
@@ -18,15 +19,14 @@ class Question extends StatefulWidget {
     required this.correct,
     required this.incorrect,
     required this.currentQuestion,
-    required this.questionsNumber,
     required this.onPressedButton,
   });
 
   @override
-  State<Question> createState() => _QuestionState();
+  ConsumerState<Question> createState() => _QuestionState();
 }
 
-class _QuestionState extends State<Question> {
+class _QuestionState extends ConsumerState<Question> {
   late List<QuestionAnswer> questionsList;
   late int correctIndex;
   int selectedIndex = -1;
@@ -51,6 +51,7 @@ class _QuestionState extends State<Question> {
 
   @override
   Widget build(BuildContext context) {
+    final questionsNumber = ref.read(selected).questionsNumber;
     return SingleChildScrollView(
       child: Container(
         child: Column(
@@ -67,10 +68,10 @@ class _QuestionState extends State<Question> {
                     padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                     decoration: BoxDecoration(
                       color: primaryColor,
-                      borderRadius: BorderRadius.circular(20), // 👈 radius here
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      '${widget.questionsNumber} / ${widget.currentQuestion + 1}',
+                      '${questionsNumber.toString()} / ${widget.currentQuestion + 1}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -83,7 +84,12 @@ class _QuestionState extends State<Question> {
             SizedBox(height: 30),
             Text(
               Uri.decodeComponent(widget.question),
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight(600)),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight(600),
+                color: Colors.white,
+              ),
+              // maxLines: 1,
             ),
 
             SizedBox(height: 30),

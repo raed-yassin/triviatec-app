@@ -6,15 +6,9 @@ import 'package:triviatec_app/widgets/question.dart';
 
 class Questions extends StatefulWidget {
   final dynamic questions;
-  final int questionsNumber;
-  final String difficultyLevel;
-  final String category;
   const Questions({
     super.key,
     required this.questions,
-    required this.questionsNumber,
-    required this.category,
-    required this.difficultyLevel,
   });
 
   @override
@@ -24,18 +18,12 @@ class Questions extends StatefulWidget {
 class _QuestionsState extends State<Questions> {
   late dynamic questionsList;
   int score = 0;
-  late int questionsNumber;
-  late String category;
-  late String difficultyLevel;
   int currentQuestion = 0;
 
   @override
   void initState() {
     super.initState();
     questionsList = widget.questions;
-    questionsNumber = widget.questionsNumber;
-    difficultyLevel = widget.difficultyLevel;
-    category = widget.category;
   }
 
   @override
@@ -58,7 +46,6 @@ class _QuestionsState extends State<Questions> {
                   questionsList[currentQuestion]["incorrect_answers"] ?? [],
                 ),
                 currentQuestion: currentQuestion,
-                questionsNumber: questionsNumber,
                 onPressedButton: onPressedButton,
               ),
             ],
@@ -80,9 +67,6 @@ class _QuestionsState extends State<Questions> {
         MaterialPageRoute(
           builder: (context) => Results(
             score: score,
-            category: category,
-            difficultyLevel: difficultyLevel,
-            questionsNumber: questionsNumber,
           ),
         ),
       );

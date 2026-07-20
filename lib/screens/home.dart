@@ -1,41 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:triviatec_app/providers/category_provider.dart';
 import 'package:triviatec_app/screens/questions.dart';
 import 'package:triviatec_app/utils/colors.dart';
-import 'package:triviatec_app/widgets/api.dart';
+import 'package:triviatec_app/utils/api.dart';
 import 'package:triviatec_app/widgets/appbar.dart';
 import 'package:triviatec_app/widgets/next_button.dart';
 
-class Home extends StatefulWidget {
+class Home extends ConsumerStatefulWidget {
   const Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  ConsumerState<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
-  int questionsNumber = 5;
-  String difficultyLevel = 'easy';
-  String category = '1';
-  List categories = [];
+class _HomeState extends ConsumerState<Home> {
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> loadCategories() async {
-    final result = await fetchCategories();
-
-    setState(() {
-      categories = result;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    loadCategories();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final categories = ref.watch(categoryProvider);
+    final homeSelectionInfo = ref.watch(selected);
     return Scaffold(
       appBar: header(),
       body: Container(
@@ -67,48 +53,74 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         SizedBox(height: 40),
-                        DropdownButtonFormField(
-                          dropdownColor: secondaryColor, // خلفية القائمة
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ), // النص المختار
-
-                          decoration: InputDecoration(
-                            labelText: "Category",
-                            labelStyle: const TextStyle(color: Colors.white),
-
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          iconEnabledColor: Colors.white, // السهم
-
-                          onChanged: (value) => setState(() {
-                            category = value.toString();
-                          }),
-                          validator: (value) {
-                            if (value == null) {
-                              return "Category is required";
-                            }
+                        categories.when(
+                          loading: () {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
                           },
-                          items: categories
-                              .map(
-                                (cat) => DropdownMenuItem(
-                                  value: cat['id'].toString(),
-                                  child: Text(cat['name']),
+
+                          error: (error, stackTrace) {
+                            return Center(
+                              child: Text(
+                                error.toString(),
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            );
+                          },
+
+                          data: (categories) {
+                            return DropdownButtonFormField<int>(
+                              dropdownColor: secondaryColor,
+                              style: const TextStyle(color: Colors.white),
+
+                              decoration: InputDecoration(
+                                labelText: "Category",
+                                labelStyle: const TextStyle(
+                                  color: Colors.white,
                                 ),
-                              )
-                              .toList(),
+
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Colors.white,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Colors.white,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+
+                              iconEnabledColor: Colors.white,
+
+                              onChanged: (value) {
+                                ref.read(selected.notifier).state.category =
+                                    value ?? -1;
+                              },
+
+                              validator: (value) {
+                                if (value == null) {
+                                  return "Category is required";
+                                }
+                                return null;
+                              },
+
+                              items: categories.map((cat) {
+                                return DropdownMenuItem<int>(
+                                  value: cat.id,
+                                  child: Text(cat.name),
+                                );
+                              }).toList(),
+                            );
+                          },
                         ),
                         SizedBox(height: 15),
                         DropdownButtonFormField(
@@ -138,9 +150,8 @@ class _HomeState extends State<Home> {
                           iconEnabledColor: Colors.white, // السهم
 
                           onChanged: (value) {
-                            setState(() {
-                              difficultyLevel = value ?? 'easy';
-                            });
+                            ref.read(selected.notifier).state.difficultyLevel =
+                                value ?? 'easy';
                           },
                           validator: (value) {
                             if (value == null) {
@@ -196,9 +207,8 @@ class _HomeState extends State<Home> {
                           iconEnabledColor: Colors.white, // السهم
 
                           onChanged: (value) {
-                            setState(() {
-                              questionsNumber = value ?? 5;
-                            });
+                            ref.read(selected.notifier).state.questionsNumber =
+                                value ?? 5;
                           },
                           validator: (value) {
                             if (value == null) {
@@ -220,9 +230,9 @@ class _HomeState extends State<Home> {
                           onPressed: () async {
                             if (!_formKey.currentState!.validate()) return;
                             final questions = await fetchQuestions(
-                              category: category,
-                              difficulty: difficultyLevel,
-                              questionNumber: questionsNumber,
+                              category: homeSelectionInfo.category,
+                              difficulty: homeSelectionInfo.difficultyLevel,
+                              questionNumber: homeSelectionInfo.questionsNumber,
                             );
 
                             if (!context.mounted) return;
@@ -232,9 +242,6 @@ class _HomeState extends State<Home> {
                               MaterialPageRoute(
                                 builder: (context) => Questions(
                                   questions: questions['results'] ?? [],
-                                  difficultyLevel: difficultyLevel,
-                                  questionsNumber: questionsNumber,
-                                  category: category,
                                 ),
                               ),
                             );
