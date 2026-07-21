@@ -15,8 +15,8 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
-
   final _formKey = GlobalKey<FormState>();
+  bool isDark = false;
 
   @override
   Widget build(BuildContext context) {
@@ -122,13 +122,19 @@ class _HomeState extends ConsumerState<Home> {
                             );
                           },
                         ),
+                        // SizedBox(height: 15),
+                        // Switch(
+                        //   value: isDark,
+                        //   onChanged: (value) => setState(() {
+                        //     isDark = value;
+                        //   }),
+                        // ),
                         SizedBox(height: 15),
                         DropdownButtonFormField(
-                          dropdownColor: secondaryColor, // خلفية القائمة
+                          dropdownColor: secondaryColor,
                           style: const TextStyle(
                             color: Colors.white,
-                          ), // النص المختار
-
+                          ),
                           decoration: InputDecoration(
                             labelText: "Difficulty",
                             labelStyle: const TextStyle(color: Colors.white),
@@ -147,7 +153,7 @@ class _HomeState extends ConsumerState<Home> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          iconEnabledColor: Colors.white, // السهم
+                          iconEnabledColor: Colors.white,
 
                           onChanged: (value) {
                             ref.read(selected.notifier).state.difficultyLevel =

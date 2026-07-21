@@ -1,8 +1,6 @@
-import 'package:flutter/animation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:triviatec_app/screens/home.dart';
 import 'package:triviatec_app/utils/api.dart';
 import 'package:triviatec_app/utils/classes.dart';
 
@@ -24,9 +22,9 @@ final selected = StateProvider<HomeSelection>(
 @riverpod
 String getCategoryName(Ref ref) {
   final categories = ref
-      .read(categoryProvider)
+      .watch(categoryProvider)
       .requireValue; // requireValue make  But if the provider is still loading or has an error, it throws an exception.
-  final selectedindex = ref.read(selected).category;
+  final selectedindex = ref.watch(selected).category;
 
   final Category category = categories.firstWhere(
     (category) => category.id == selectedindex,
