@@ -27,5 +27,16 @@ class HomeSelection {
     required this.difficultyLevel,
     required this.questionsNumber,
   });
+  
+  HomeSelection copyWith({
+    int? category,
+    String? difficultyLevel,
+    int? questionsNumber,
+  }) {
+    return HomeSelection(
+      category: category ?? this.category,
+      difficultyLevel: difficultyLevel ?? this.difficultyLevel,
+      questionsNumber: questionsNumber ?? this.questionsNumber,
+    );
+  }
 }
-

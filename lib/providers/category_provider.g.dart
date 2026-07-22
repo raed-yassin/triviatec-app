@@ -48,4 +48,4 @@ final class GetCategoryNameProvider
   }
 }
 
-String _$getCategoryNameHash() => r'd1234e188eac18360bf6b8fdaba0a21beeb49c32';
+String _$getCategoryNameHash() => r'a84cc5061f1718bdc33b40d6b617702cbb69408d';

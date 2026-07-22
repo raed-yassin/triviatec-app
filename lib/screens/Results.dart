@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:triviatec_app/providers/category_provider.dart';
-import 'package:triviatec_app/screens/home.dart';
+import 'package:triviatec_app/providers/questions_provider.dart';
 import 'package:triviatec_app/utils/colors.dart';
 import 'package:triviatec_app/widgets/appbar.dart';
 import 'package:triviatec_app/widgets/next_button.dart';
 
 class Results extends ConsumerWidget {
-  final int score;
-  const Results({super.key, required this.score});
+  const Results({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeSelectionInfo = ref.read(selected);
-    final categoryName = ref.read(getCategoryNameProvider);
+    final homeSelectionInfo = ref.watch(selected);
+    final categoryName = ref.watch(getCategoryNameProvider);
+    final score = ref.watch(scoreProvider);
     return Scaffold(
       appBar: header(),
 
@@ -67,10 +68,12 @@ class Results extends ConsumerWidget {
               nextButton(
                 buttonText: "Play Again",
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
+                  ref.read(scoreProvider.notifier).resetScore();
+                  context.pushNamed('home');
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => Home()),
+                  // );
                 },
               ),
             ],

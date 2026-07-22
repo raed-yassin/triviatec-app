@@ -16,7 +16,7 @@ final categoryProvider = FutureProvider<List<Category>>((ref) async {
 
 final selected = StateProvider<HomeSelection>(
   (ref) =>
-      HomeSelection(category: -2, difficultyLevel: 'easy', questionsNumber: -1),
+      HomeSelection(category: -2, difficultyLevel: 'easy', questionsNumber: 5),
 );
 
 @riverpod

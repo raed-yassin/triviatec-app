@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:triviatec_app/providers/category_provider.dart';
 import 'package:triviatec_app/screens/questions.dart';
+import 'package:triviatec_app/utils/classes.dart';
 import 'package:triviatec_app/utils/colors.dart';
-import 'package:triviatec_app/utils/api.dart';
 import 'package:triviatec_app/widgets/appbar.dart';
 import 'package:triviatec_app/widgets/next_button.dart';
 
@@ -17,11 +18,15 @@ class Home extends ConsumerStatefulWidget {
 class _HomeState extends ConsumerState<Home> {
   final _formKey = GlobalKey<FormState>();
   bool isDark = false;
+  HomeSelection homeSelection = HomeSelection(
+    category: 1,
+    difficultyLevel: 'easy',
+    questionsNumber: 5,
+  );
 
   @override
   Widget build(BuildContext context) {
     final categories = ref.watch(categoryProvider);
-    final homeSelectionInfo = ref.watch(selected);
     return Scaffold(
       appBar: header(),
       body: Container(
@@ -102,8 +107,9 @@ class _HomeState extends ConsumerState<Home> {
                               iconEnabledColor: Colors.white,
 
                               onChanged: (value) {
-                                ref.read(selected.notifier).state.category =
-                                    value ?? -1;
+                                setState(() {
+                                  homeSelection.category = value ?? 1;
+                                });
                               },
 
                               validator: (value) {
@@ -132,9 +138,7 @@ class _HomeState extends ConsumerState<Home> {
                         SizedBox(height: 15),
                         DropdownButtonFormField(
                           dropdownColor: secondaryColor,
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
+                          style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             labelText: "Difficulty",
                             labelStyle: const TextStyle(color: Colors.white),
@@ -156,8 +160,9 @@ class _HomeState extends ConsumerState<Home> {
                           iconEnabledColor: Colors.white,
 
                           onChanged: (value) {
-                            ref.read(selected.notifier).state.difficultyLevel =
-                                value ?? 'easy';
+                            setState(() {
+                              homeSelection.difficultyLevel = value ?? 'easy';
+                            });
                           },
                           validator: (value) {
                             if (value == null) {
@@ -213,8 +218,9 @@ class _HomeState extends ConsumerState<Home> {
                           iconEnabledColor: Colors.white, // السهم
 
                           onChanged: (value) {
-                            ref.read(selected.notifier).state.questionsNumber =
-                                value ?? 5;
+                            setState(() {
+                              homeSelection.questionsNumber = value ?? 5;
+                            });
                           },
                           validator: (value) {
                             if (value == null) {
@@ -235,22 +241,20 @@ class _HomeState extends ConsumerState<Home> {
                         nextButton(
                           onPressed: () async {
                             if (!_formKey.currentState!.validate()) return;
-                            final questions = await fetchQuestions(
-                              category: homeSelectionInfo.category,
-                              difficulty: homeSelectionInfo.difficultyLevel,
-                              questionNumber: homeSelectionInfo.questionsNumber,
-                            );
 
                             if (!context.mounted) return;
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Questions(
-                                  questions: questions['results'] ?? [],
-                                ),
-                              ),
-                            );
+                            ref.read(selected.notifier).state = homeSelection;
+
+                            context.pushNamed('qustions');
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => Questions(
+                            //       // questions: questions['results'] ?? [],
+                            //     ),
+                            //   ),
+                            // );
                           },
                         ),
                       ],
